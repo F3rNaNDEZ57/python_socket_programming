@@ -34,17 +34,26 @@ def handle_check_register(data):
 def ensure_room_exists(room_name):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT RoomID FROM Rooms WHERE RoomName = ?", (room_name,))
-    room = cursor.fetchone()
-    if not room:
-        cursor.execute("INSERT INTO Rooms (RoomName) OUTPUT INSERTED.RoomID VALUES (?)", (room_name,))
-        conn.commit()
-        room_id = cursor.fetchone()[0]
-    else:
-        room_id = room[0]
-    cursor.close()
-    conn.close()
-    return room_id
+    try:
+        # Execute the query to check if the room exists
+        cursor.execute("SELECT RoomID FROM Rooms WHERE RoomName = ?", (room_name,))
+        room = cursor.fetchone()
+        if not room:
+            # Room does not exist, insert and fetch new RoomID
+            cursor.execute("INSERT INTO Rooms (RoomName) OUTPUT INSERTED.RoomID VALUES (?)", (room_name,))
+            conn.commit()  # Commit the transaction to ensure it's saved
+            cursor.execute("SELECT @@IDENTITY AS 'Identity';")  # Get last inserted ID safely
+            room_id = cursor.fetchone()[0]
+        else:
+            room_id = room[0]
+        return room_id
+    except pyodbc.Error as e:
+        print("Database error:", e)
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
 
 @socketio.on('join')
 def on_join(data):
