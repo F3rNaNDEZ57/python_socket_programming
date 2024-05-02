@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Text, ScrollView } from 'react-native';
 import io from 'socket.io-client';
 
-const socket = io("http://your_flask_server_ip:5000");
+const socket = io("https://b38b-103-247-51-129.ngrok-free.app");
 
 const ChatRoom = () => {
     const [room, setRoom] = useState('');
