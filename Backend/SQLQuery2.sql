@@ -1,0 +1,3 @@
+SELECT * FROM Messages
+SELECT * FROM Rooms
+SELECT * FROM Users
