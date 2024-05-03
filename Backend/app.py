@@ -6,7 +6,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins='*')
 
 def get_db_connection():
-    return pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=149.28.141.230;DATABASE=chatapptest;UID=sa;PWD=2002JaN03KAV')
+    return pyodbc.connect('')
 
 @socketio.on('check_register')
 def handle_check_register(data):
